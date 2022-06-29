@@ -19,12 +19,17 @@ import javax.validation.constraints.NotNull;
 import com.integration.integration.enums.StatusEnum;
 import com.integration.integration.enums.TypeEnum;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "launch")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class LaunchModel {
     
@@ -32,8 +37,8 @@ public class LaunchModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Max(100)
     @NotNull
+    @Length(min = 5, max = 100)
     private String description;
     
     @Min(1)

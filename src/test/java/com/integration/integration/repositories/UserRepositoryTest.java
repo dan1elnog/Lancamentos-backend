@@ -5,9 +5,7 @@ import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import com.integration.integration.models.UserModel;
 import com.integration.integration.service.interfaces.UserService;
 
@@ -23,7 +21,7 @@ public class UserRepositoryTest {
     @Test
     public void checkIfExistsEmail(){
     //Cenário
-    UserModel user = UserModel.builder()
+    UserModel.builder()
     .name("daniel")
     .email("teste@email.com")
     .password("1234")
@@ -70,7 +68,7 @@ public class UserRepositoryTest {
             .password("213522")
             .build();
         
-        String userEmail = user.getEmail();
+        user.getEmail();
         UserModel u = service.saveUser(user);
         Assertions.assertThat(u).isEqualTo(true);        
     }

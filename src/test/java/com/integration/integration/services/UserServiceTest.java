@@ -23,7 +23,7 @@ public class UserServiceTest {
         String email = "teste11@teste.com";
         String password = "teste3";
 
-        UserModel user = UserModel.builder()
+        UserModel.builder()
             .name("u2")
             .email(email)
             .password(password)

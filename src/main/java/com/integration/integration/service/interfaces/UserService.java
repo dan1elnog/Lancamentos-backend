@@ -1,5 +1,7 @@
 package com.integration.integration.service.interfaces;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.integration.integration.models.UserModel;
@@ -12,4 +14,6 @@ public interface UserService {
     UserModel saveUser(UserModel user);
 
     void emailValidation(String email);
+
+    Optional<UserModel> findById(Long id);
 }
