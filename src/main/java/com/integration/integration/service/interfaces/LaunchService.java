@@ -1,5 +1,6 @@
 package com.integration.integration.service.interfaces;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.integration.integration.enums.StatusEnum;
@@ -18,4 +19,6 @@ public interface LaunchService {
     void  updateStatus(LaunchModel launch, StatusEnum status);
 
     void  validate(LaunchModel launch);
+
+    BigDecimal getBalanceByUser(Long id);
 }

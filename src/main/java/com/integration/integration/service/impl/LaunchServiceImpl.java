@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.integration.integration.enums.TypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -35,9 +36,24 @@ public class LaunchServiceImpl implements LaunchService {
     @Override
     @Transactional
     public LaunchModel update(LaunchModel launch) {
-        validate(launch);
-        Objects.requireNonNull(launch.getId());
-        return repository.save(launch);
+        try {
+            repository.findById(launch.getId()).map(entity -> {
+                entity.setYear(launch.getYear());
+                entity.setDescription(launch.getDescription());
+                entity.setMonth(launch.getMonth());
+                entity.setValue(launch.getValue());
+                entity.setUser(launch.getUser());
+                entity.setStatus(launch.getStatus());
+                entity.setType(launch.getType());
+                entity.setUser(launch.getUser());
+
+                return repository.save(entity);
+            }).get();
+        }catch (BusinessRuleException e){
+            throw new BusinessRuleException("erro");
+        }
+
+        return launch;
     }
 
     @Override
@@ -86,7 +102,21 @@ public class LaunchServiceImpl implements LaunchService {
             throw new BusinessRuleException("Value not Valid");
         }
     }
-    
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getBalanceByUser(Long id) {
+        BigDecimal revenues = repository.getBalanceByTypeAndUser(id, TypeEnum.RECEITA);
+        BigDecimal expenses = repository.getBalanceByTypeAndUser(id, TypeEnum.DESPESA);
+        if (expenses == null){
+            expenses = BigDecimal.ZERO;
+        }
+        if (revenues == null){
+            revenues = BigDecimal.ZERO;
+        }
+        return revenues.subtract(expenses);
+    }
+
     public Optional<LaunchModel> findById(long id){
         return repository.findById(id);
     }
