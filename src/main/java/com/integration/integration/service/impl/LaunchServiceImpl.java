@@ -1,11 +1,14 @@
 package com.integration.integration.service.impl;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.integration.integration.enums.TypeEnum;
+import com.integration.integration.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -46,6 +49,7 @@ public class LaunchServiceImpl implements LaunchService {
                 entity.setStatus(launch.getStatus());
                 entity.setType(launch.getType());
                 entity.setUser(launch.getUser());
+                entity.setRegistry_date(LocalDateTime.now());
 
                 return repository.save(entity);
             }).get();
@@ -66,10 +70,10 @@ public class LaunchServiceImpl implements LaunchService {
     @Override
     @Transactional(readOnly = true) // transações apenas de consultas
     public List<LaunchModel> search(LaunchModel launchFilter) {
-        Example example = Example.of(launchFilter, 
+        Example<LaunchModel> example = Example.of(launchFilter,
             ExampleMatcher.matching()
                 .withIgnoreCase()
-                .withStringMatcher(StringMatcher.CONTAINING)            
+                .withStringMatcher(StringMatcher.CONTAINING)
             );
         return repository.findAll(example);
     }
@@ -104,10 +108,15 @@ public class LaunchServiceImpl implements LaunchService {
     }
 
     @Override
+    public Optional<LaunchModel> getById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public BigDecimal getBalanceByUser(Long id) {
-        BigDecimal revenues = repository.getBalanceByTypeAndUser(id, TypeEnum.RECEITA);
-        BigDecimal expenses = repository.getBalanceByTypeAndUser(id, TypeEnum.DESPESA);
+        BigDecimal revenues = repository.getBalanceByTypeAndUserAndStatus(id, TypeEnum.RECEITA, StatusEnum.EFETIVADO);
+        BigDecimal expenses = repository.getBalanceByTypeAndUserAndStatus(id, TypeEnum.DESPESA, StatusEnum.EFETIVADO);
         if (expenses == null){
             expenses = BigDecimal.ZERO;
         }
@@ -117,7 +126,13 @@ public class LaunchServiceImpl implements LaunchService {
         return revenues.subtract(expenses);
     }
 
-    public Optional<LaunchModel> findById(long id){
-        return repository.findById(id);
+    @Override
+    public List<LaunchModel> filter(Integer keyword) {
+        if (keyword == null){
+            return repository.findAll();
+        }
+        return repository.filter(keyword);
     }
+
+
 }

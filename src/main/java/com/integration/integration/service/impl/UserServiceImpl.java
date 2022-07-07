@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         }
     }
     
-    public Optional<UserModel> findById(Long id){
+    public Optional<UserModel> getById(Long id){
         return repository.findById(id);
     }
 }

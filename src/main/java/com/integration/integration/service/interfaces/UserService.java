@@ -15,5 +15,5 @@ public interface UserService {
 
     void emailValidation(String email);
 
-    Optional<UserModel> findById(Long id);
+    Optional<UserModel> getById(Long id);
 }

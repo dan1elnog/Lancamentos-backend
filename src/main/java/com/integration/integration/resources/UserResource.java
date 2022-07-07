@@ -54,7 +54,7 @@ public class UserResource {
 
     @GetMapping("/{id}/balance")
     public ResponseEntity<?> getBalance(@PathVariable Long id){
-        Optional<UserModel> user =  service.findById(id);
+        Optional<UserModel> user =  service.getById(id);
         if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
